@@ -3,6 +3,7 @@ using HealthChecks.UI.Client;
 using HouseBroker.Application.Interfaces;
 using HouseBroker.Application.Interfaces.Repositories;
 using HouseBroker.Application.Services;
+using HouseBroker.Domain.Enums;
 using HouseBroker.Infrastructure.Data;
 using HouseBroker.Infrastructure.Data.Repositories;
 using HouseBroker.Infrastructure.Data.TypeHandlers;
@@ -12,8 +13,10 @@ using HouseBroker.Presentation.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json.Serialization;
 
 SqlMapper.AddTypeHandler(new MoneyTypeHandler());
 SqlMapper.AddTypeHandler(new LocationTypeHandler());
@@ -21,10 +24,24 @@ SqlMapper.AddTypeHandler(new PropertyTypeHandler());
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    }); ;
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
+    c.SupportNonNullableReferenceTypes();
+    c.UseInlineDefinitionsForEnums();
+    c.MapType<PropertyType>(() => new OpenApiSchema
+    {
+        Type = "string",
+        Enum = Enum.GetNames(typeof(PropertyType))
+                    .Select(name => new OpenApiString(name))
+                    .Cast<IOpenApiAny>()
+                    .ToList()
+    });
     c.SwaggerDoc("v1", new() { Title = "House Broker API", Version = "v1" });
 
     // Add JWT Authentication
