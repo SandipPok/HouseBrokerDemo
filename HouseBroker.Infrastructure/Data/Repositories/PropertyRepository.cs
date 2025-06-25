@@ -45,14 +45,32 @@ namespace HouseBroker.Infrastructure.Data.Repositories
         public async Task<IEnumerable<Property>> GetAllAsync()
         {
             using var connection = _connectionFactory.CreateConnection();
-            return await connection.QueryAsync<Property>("SELECT * FROM Properties");
+            return await connection.QueryAsync<Property>(@"SELECT 
+                                                            Id,
+                                                            PropertyType as Type,
+                                                            Location,
+                                                            Price,
+                                                            Description,
+                                                            Features,
+                                                            BrokerId,
+                                                            CreatedDate
+                                                        FROM Properties");
         }
 
         public async Task<Property> GetByIdAsync(int id)
         {
             using var connection = _connectionFactory.CreateConnection();
             return await connection.QueryFirstOrDefaultAsync<Property>(
-                "SELECT * FROM Properties WHERE Id = @Id", new { Id = id });
+                @"SELECT 
+                    Id,
+                    PropertyType as Type,
+                    Location,
+                    Price,
+                    Description,
+                    Features,
+                    BrokerId,
+                    CreatedDate
+                FROM Properties WHERE Id = @Id", new { Id = id });
         }
 
         public async Task UpdateAsync(Property property)
