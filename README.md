@@ -49,5 +49,4 @@ This will build the solution and execute all tests in the `HouseBroker.Tests` pr
 
 The application exposes health check endpoints for database and JWT configuration:
 
-- `/health/database`
-- `/health/jwt`
+- `/health`
