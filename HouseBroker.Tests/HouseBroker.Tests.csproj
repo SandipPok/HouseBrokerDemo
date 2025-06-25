@@ -22,6 +22,7 @@
     <ProjectReference Include="..\HouseBroker.Application\HouseBroker.Application.csproj" />
     <ProjectReference Include="..\HouseBroker.Domain\HouseBroker.Domain.csproj" />
     <ProjectReference Include="..\HouseBroker.Infrastructure\HouseBroker.Infrastructure.csproj" />
+    <ProjectReference Include="..\HouseBroker.Presentation\HouseBroker.Presentation.csproj" />
   </ItemGroup>
 
   <ItemGroup>

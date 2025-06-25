@@ -23,30 +23,30 @@ namespace HouseBroker.Presentation.Controllers
         }
 
         /// <summary>
-        /// Get all properties
+        /// Get all properties with broker contact details
         /// </summary>
-        /// <returns>List of properties</returns>
+        /// <returns>List of properties with broker information</returns>
         [HttpGet]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
-            var properties = await _propertyService.GetAllAsync();
+            var properties = await _propertyService.GetAllWithBrokerAsync();
             return Ok(properties);
         }
 
         /// <summary>
-        /// Get property by ID
+        /// Get property by ID with broker contact details
         /// </summary>
         /// <param name="id">Property ID</param>
-        /// <returns>Property details</returns>
+        /// <returns>Property details with broker information</returns>
         [HttpGet("{id}")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById(int id)
         {
-            var property = await _propertyService.GetByIdAsync(id);
+            var property = await _propertyService.GetByIdWithBrokerAsync(id);
             if (property == null)
                 return NotFound();
 
@@ -56,26 +56,24 @@ namespace HouseBroker.Presentation.Controllers
         /// <summary>
         /// Create new property listing
         /// </summary>
-        /// <param name="property">Property data</param>
-        /// <returns>Created property</returns>
+        /// <param name="createDto">Property data</param>
+        /// <returns>Created property with broker details</returns>
         [HttpPost]
         [Authorize(Policy = "BrokerOnly")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(PropertyDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> Create([FromBody] Property property)
+        public async Task<IActionResult> Create([FromBody] CreatePropertyDto createDto)
         {
             try
             {
                 var brokerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-                property.BrokerId = brokerId;
-
-                await _propertyService.CreateAsync(property);
+                var createdProperty = await _propertyService.CreateAsync(createDto, brokerId);
 
                 return CreatedAtAction(
                     nameof(GetById),
-                    new { id = property.Id },
-                    property);
+                    new { id = createdProperty.Id },
+                    createdProperty);
             }
             catch (Exception ex)
             {
@@ -88,21 +86,18 @@ namespace HouseBroker.Presentation.Controllers
         /// Update existing property
         /// </summary>
         /// <param name="id">Property ID</param>
-        /// <param name="property">Updated property data</param>
+        /// <param name="updateDto">Updated property data</param>
         [HttpPut("{id}")]
         [Authorize(Policy = "BrokerOnly")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(int id, [FromBody] Property property)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdatePropertyDto updateDto)
         {
             try
             {
                 var brokerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-                property.BrokerId = brokerId;
-                property.Id = id;
-                await _propertyService.UpdateAsync(property);
+                await _propertyService.UpdateAsync(id, updateDto, brokerId);
 
                 return NoContent();
             }
@@ -145,19 +140,16 @@ namespace HouseBroker.Presentation.Controllers
         }
 
         /// <summary>
-        /// Search properties with filters
+        /// Search properties with filters and broker contact details
         /// </summary>
-        /// <param name="location">Location filter</param>
-        /// <param name="minPrice">Minimum price</param>
-        /// <param name="maxPrice">Maximum price</param>
-        /// <param name="propertyType">Property type</param>
-        /// <returns>Filtered properties</returns>
+        /// <param name="filters">Search filters</param>
+        /// <returns>Filtered properties with broker information</returns>
         [HttpGet("search")]
         [AllowAnonymous]
-        [ProducesResponseType(typeof(PaginatedResult<Property>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PaginatedResult<PropertyDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Search([FromQuery] PropertySearchFilters filters)
         {
-            var results = await _propertyService.SearchAsync(filters);
+            var results = await _propertyService.SearchWithBrokerAsync(filters);
             return Ok(results);
         }
     }

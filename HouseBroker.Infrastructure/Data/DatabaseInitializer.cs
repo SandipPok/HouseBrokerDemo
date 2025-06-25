@@ -52,6 +52,18 @@ namespace HouseBroker.Infrastructure.Data
                     CreatedDate DATETIME DEFAULT GETUTCDATE(),
                     FOREIGN KEY (BrokerId) REFERENCES Users(Id)
                 )");
+            
+            // Create PropertyImages table for storing image URLs
+            connection.Execute(@"
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'PropertyImages')
+                CREATE TABLE PropertyImages (
+                    Id INT PRIMARY KEY IDENTITY,
+                    PropertyId INT NOT NULL,
+                    ImageUrl NVARCHAR(500) NOT NULL,
+                    DisplayOrder INT DEFAULT 0,
+                    CreatedDate DATETIME DEFAULT GETUTCDATE(),
+                    FOREIGN KEY (PropertyId) REFERENCES Properties(Id) ON DELETE CASCADE
+                )");
         }
 
         private void CreateIndexes(IDbConnection connection)
