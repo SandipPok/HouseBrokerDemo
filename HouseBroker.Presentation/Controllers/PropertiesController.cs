@@ -98,14 +98,9 @@ namespace HouseBroker.Presentation.Controllers
         {
             try
             {
-                var existing = await _propertyService.GetByIdAsync(id);
-                if (existing == null)
-                    return NotFound();
-
                 var brokerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-                if (existing.BrokerId != brokerId)
-                    return Forbid();
 
+                property.BrokerId = brokerId;
                 property.Id = id;
                 await _propertyService.UpdateAsync(property);
 
