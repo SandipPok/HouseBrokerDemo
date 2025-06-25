@@ -51,6 +51,7 @@ namespace HouseBroker.Tests.Services
 
             var dto = _fixture.Build<Property>()
                 .With(p => p.BrokerId, brokerId)
+                .With(p => p.Id, propertyId)
                 .Create();
 
             var existing = _fixture.Build<Property>()

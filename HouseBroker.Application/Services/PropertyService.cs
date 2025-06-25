@@ -2,6 +2,7 @@
 using HouseBroker.Application.Interfaces;
 using HouseBroker.Application.Interfaces.Repositories;
 using HouseBroker.Domain.Entities;
+using HouseBroker.Domain.Exceptions;
 
 namespace HouseBroker.Application.Services
 {
@@ -26,8 +27,22 @@ namespace HouseBroker.Application.Services
         public async Task<Property> GetByIdAsync(int id) =>
             await _propertyRepository.GetByIdAsync(id);
 
-        public async Task UpdateAsync(Property property) =>
+        public async Task UpdateAsync(Property property)
+        {
+
+            var existingProperty = await GetByIdAsync(property.Id);
+            if (existingProperty == null)
+            {
+                throw new KeyNotFoundException($"Property with ID {property.Id} not found.");
+            }
+
+            // Authorization check
+            if (existingProperty.BrokerId != property.BrokerId)
+            {
+                throw new UnauthorizedException();
+            }
             await _propertyRepository.UpdateAsync(property);
+        }
 
         public async Task<PaginatedResult<Property>> SearchAsync(PropertySearchFilters filters)
             => await _propertyRepository.SearchAsync(filters);
