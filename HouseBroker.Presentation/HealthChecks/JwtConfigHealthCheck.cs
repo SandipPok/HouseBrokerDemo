@@ -15,9 +15,9 @@ namespace HouseBroker.Presentation.HealthChecks
             HealthCheckContext context,
             CancellationToken cancellationToken = default)
         {
-            var key = _configuration["Jwt:Key"];
-            var issuer = _configuration["Jwt:Issuer"];
-            var audience = _configuration["Jwt:Audience"];
+            var key = _configuration["JwtSettings:Key"];
+            var issuer = _configuration["JwtSettings:Issuer"];
+            var audience = _configuration["JwtSettings:Audience"];
 
             if (string.IsNullOrEmpty(key) || key.Length < 32)
                 return Task.FromResult(HealthCheckResult.Unhealthy("Invalid JWT key"));
