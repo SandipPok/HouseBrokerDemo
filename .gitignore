@@ -11,3 +11,5 @@
 /HouseBroker.Infrastructure/obj
 /HouseBroker.Presentation/bin/Debug/net9.0
 /HouseBroker.Presentation/obj
+/HouseBroker.Tests/bin/Debug/net9.0
+/HouseBroker.Tests/obj
