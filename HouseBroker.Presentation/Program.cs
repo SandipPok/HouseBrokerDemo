@@ -109,6 +109,7 @@ using (var scope = app.Services.CreateScope())
 // Middleware pipeline
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {

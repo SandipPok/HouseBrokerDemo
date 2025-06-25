@@ -29,7 +29,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:52050/swagger",
+      "applicationUrl": "http://localhost:52050/",
       "sslPort": 44379
     }
   }
