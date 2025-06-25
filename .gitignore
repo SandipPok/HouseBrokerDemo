@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/HouseBroker.Domain/bin/Debug/net9.0
+/HouseBroker.Domain/obj
+/HouseBroker.Application/bin/Debug/net9.0
+/HouseBroker.Application/obj
+/HouseBroker.Infrastructure/bin/Debug/net9.0
+/HouseBroker.Infrastructure/obj
+/HouseBroker.Presentation/bin/Debug/net9.0
+/HouseBroker.Presentation/obj

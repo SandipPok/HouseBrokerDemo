@@ -1,0 +1,6 @@
+@HouseBroker.Presentation_HostAddress = http://localhost:5242
+
+GET {{HouseBroker.Presentation_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
